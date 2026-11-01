@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import logo from "../assets/logo.png";
 
 export default function Login() {
   const { user, signIn, signUp } = useAuth();
@@ -50,6 +51,7 @@ export default function Login() {
 
   return (
     <div className="card" style={{ maxWidth: 440, marginInline: "auto" }}>
+      <img className="logo-full" src={logo} alt="Adspace" />
       <h1>{mode === "in" ? "تسجيل الدخول" : "إنشاء حساب"}</h1>
       <p className="lead">
         {mode === "in" ? "سجل دخولك لإرسال إعلاناتك ومتابعتها." : "أنشئ حسابا لتبدأ بإرسال إعلاناتك."}

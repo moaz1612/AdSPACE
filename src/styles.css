@@ -37,7 +37,10 @@
 * {
   box-sizing: border-box;
 }
-html,
+html {
+  margin: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+}
 body {
   margin: 0;
 }
@@ -48,7 +51,7 @@ body {
   font-size: 15px;
   line-height: 1.6;
   direction: rtl;
-  padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
@@ -95,7 +98,7 @@ header.top {
   align-items: center;
   justify-content: space-between;
   gap: 10px 20px;
-  padding-block: 14px;
+  padding-block: 10px;
   border-bottom: 1px solid var(--line);
 }
 .brand {
@@ -107,49 +110,120 @@ header.top {
   font-size: 22px;
   letter-spacing: 0.3px;
 }
-.brand i {
+.brand .badge {
+  display: grid;
+  place-items: center;
+  height: 40px;
+  padding: 0 6px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.brand .badge img {
   display: block;
-  width: 16px;
-  height: 28px;
-  border: 2.5px solid var(--accent);
-  border-radius: 3px;
+  height: 30px;
+  width: auto;
+}
+.logo-full {
+  display: block;
+  width: min(240px, 70%);
+  height: auto;
+  margin: 0 auto 14px;
+  background: #fff;
+  border-radius: 14px;
+}
+
+/* القائمة المنسدلة */
+.menu {
   position: relative;
 }
-.brand i::after {
+.menubtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  cursor: pointer;
+  font-weight: 500;
+}
+.menubtn:hover,
+.menubtn[aria-expanded="true"] {
+  border-color: var(--accent);
+}
+.bars3,
+.bars3::before,
+.bars3::after {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+}
+.bars3 {
+  position: relative;
+}
+.bars3::before,
+.bars3::after {
   content: "";
   position: absolute;
-  inset: 4px 3px;
-  background: var(--accent);
-  border-radius: 1px;
-  opacity: 0.35;
+  left: 0;
 }
-nav.tabs {
+.bars3::before {
+  top: -6px;
+}
+.bars3::after {
+  top: 6px;
+}
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-end: 0;
+  min-width: 210px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 6px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  z-index: 30;
 }
-nav.tabs a,
-nav.tabs .tablink {
-  text-decoration: none;
-  padding: 7px 14px;
-  border-radius: 999px;
-  color: var(--muted);
-  font-weight: 500;
-  border: 1px solid transparent;
+.dropdown a,
+.dropdown button {
+  display: block;
+  width: 100%;
+  text-align: start;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 0;
   background: transparent;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 500;
   cursor: pointer;
 }
-nav.tabs a:hover,
-nav.tabs .tablink:hover {
-  color: var(--ink);
-  border-color: var(--line);
+.dropdown a:hover,
+.dropdown button:hover {
+  background: var(--surface2);
 }
-nav.tabs a.active {
+.dropdown a.active {
   background: var(--ink);
   color: var(--bg);
 }
+.dropdown hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 4px 0;
+}
 main {
   padding-top: 24px;
+}
+main.home {
+  padding-top: 12px;
 }
 h1,
 h2,
@@ -253,7 +327,10 @@ h3 {
 .frame {
   position: relative;
   aspect-ratio: 9 / 16;
-  width: min(360px, 100%, calc(76vh * 9 / 16));
+  /* ارتفاع الإطار = الشاشة ناقص الهيدر والهوامش، والعرض يتبع نسبة 9:16 */
+  width: calc((100vh - 97px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * 9 / 16);
+  width: calc((100dvh - 97px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * 9 / 16);
+  max-width: 100%;
   background: #0b0e11;
   border-radius: 14px;
   overflow: hidden;
@@ -628,7 +705,7 @@ input[type="file"] {
     justify-items: center;
   }
   .queue {
-    width: 100%;
+    display: none;
   }
   .formgrid {
     grid-template-columns: minmax(0, 1fr);

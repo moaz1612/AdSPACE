@@ -76,11 +76,6 @@ export default function Viewer() {
 
   return (
     <>
-      <h1>عرض الإعلانات</h1>
-      <p className="lead">
-        كل إعلان يأخذ الشاشة كاملة بنسبة ٩:١٦ ويتبدل تلقائيا. اضغط مطولا على الإعلان لإيقافه.
-      </p>
-      <div style={{ height: 20 }} />
       {failed && <div className="notice warn">تعذر تحديث الإعلانات الآن. سنحاول مرة أخرى.</div>}
       {live === null ? (
         <div className="empty">جار التحميل...</div>
