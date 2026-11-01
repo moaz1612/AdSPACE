@@ -1,35 +1,44 @@
-/* Adspace: تصميم RTL بثيم فاتح وداكن. الألوان كلها متغيرات في :root */
+/* Adspace: RTL، ثيم فاتح وداكن، ألوان مأخوذة من اللوجو (كحلي + برتقالي). كل الألوان متغيرات في :root */
 :root {
-  --bg: #eceff2;
+  --bg: #f2f5fa;
   --surface: #ffffff;
-  --surface2: #e2e7ec;
-  --ink: #151a21;
-  --muted: #5b6572;
-  --line: #d2d8df;
-  --accent: #0f766e;
+  --surface2: #e7ecf5;
+  --ink: #0a1f44;
+  --muted: #5b6b88;
+  --line: #d8e0ee;
+  --accent: #0a3a82; /* كحلي اللوجو: الأزرار الأساسية والعنصر النشط */
   --accent-ink: #ffffff;
+  --pop: #ff7a00; /* برتقالي اللوجو: التمييز والإجراء */
+  --pop-ink: #0a1f44;
+  --wm-ad: #0a3a82; /* "Ad" في اسم Adspace */
   --good: #1e8e5a;
   --warn: #a86a0c;
   --bad: #c0392b;
-  --scrim: rgba(8, 12, 16, 0.78);
+  --scrim: rgba(5, 14, 36, 0.8);
+  --shadow: 0 1px 2px rgba(10, 31, 68, 0.06), 0 10px 28px rgba(10, 31, 68, 0.07);
   --display: "Reem Kufi", "IBM Plex Sans Arabic", system-ui, sans-serif;
   --body: "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+  --latin: "Poppins", "IBM Plex Sans Arabic", system-ui, sans-serif;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f1316;
-    --surface: #171c21;
-    --surface2: #222930;
-    --ink: #eceff1;
-    --muted: #98a3ae;
-    --line: #2b333b;
-    --accent: #36c5b0;
-    --accent-ink: #06201c;
+    --bg: #081226;
+    --surface: #0f1b35;
+    --surface2: #17274a;
+    --ink: #eaf0fb;
+    --muted: #95a5c4;
+    --line: #22345e;
+    --accent: #3b72da;
+    --accent-ink: #ffffff;
+    --pop: #ff8a1f;
+    --pop-ink: #0a1f44;
+    --wm-ad: #eaf0fb;
     --good: #4cc38a;
     --warn: #e0a545;
     --bad: #ef7b6e;
-    --scrim: rgba(0, 0, 0, 0.72);
+    --scrim: rgba(2, 8, 22, 0.78);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.25);
     color-scheme: dark;
   }
 }
@@ -74,7 +83,7 @@ textarea {
   color: inherit;
 }
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--pop);
   outline-offset: 2px;
 }
 code {
@@ -94,30 +103,50 @@ header.top {
   z-index: 9;
   background: var(--bg);
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row-reverse; /* أول عنصر (اللوجو) على اليسار والقائمة على اليمين */
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 10px 20px;
-  padding-block: 10px;
-  border-bottom: 1px solid var(--line);
+  gap: 12px;
+  padding-block: 10px 12px;
+}
+header.top::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--pop));
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: var(--display);
+  gap: 8px;
+  direction: ltr;
+  min-width: 0;
+  text-decoration: none;
+}
+.brand .wm {
+  font-family: var(--latin);
   font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.3px;
+  font-size: 21px;
+  letter-spacing: -0.2px;
+  color: var(--pop);
+  line-height: 1;
+}
+.brand .wm b {
+  font-weight: 700;
+  color: var(--wm-ad);
 }
 .brand .badge {
   display: grid;
   place-items: center;
   height: 40px;
-  padding: 0 6px;
+  padding: 0 7px;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 0 0 1px var(--line);
+  flex: none;
 }
 .brand .badge img {
   display: block;
@@ -148,10 +177,11 @@ header.top {
   background: var(--surface);
   cursor: pointer;
   font-weight: 500;
+  flex: none;
 }
 .menubtn:hover,
 .menubtn[aria-expanded="true"] {
-  border-color: var(--accent);
+  border-color: var(--pop);
 }
 .bars3,
 .bars3::before,
@@ -179,9 +209,10 @@ header.top {
 }
 .dropdown {
   position: absolute;
-  top: calc(100% + 8px);
-  inset-inline-end: 0;
-  min-width: 210px;
+  top: calc(100% + 10px);
+  inset-inline-start: 0; /* يلتصق بحافة الزر اليمنى ويمتد لليسار داخل الشاشة */
+  min-width: 220px;
+  max-width: calc(100vw - 32px);
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -189,7 +220,7 @@ header.top {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow), 0 16px 40px rgba(0, 0, 0, 0.22);
   z-index: 30;
 }
 .dropdown a,
@@ -211,8 +242,8 @@ header.top {
   background: var(--surface2);
 }
 .dropdown a.active {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 .dropdown hr {
   border: 0;
@@ -277,6 +308,9 @@ h3 {
   border-color: var(--accent);
   color: var(--accent-ink);
 }
+.btn.primary:hover {
+  filter: brightness(1.12);
+}
 .btn.danger {
   color: var(--bad);
   border-color: var(--bad);
@@ -337,7 +371,7 @@ h3 {
   color: #fff;
   user-select: none;
   touch-action: pan-y;
-  box-shadow: 0 0 0 1px var(--line);
+  box-shadow: 0 0 0 1px var(--line), var(--shadow);
 }
 .frame .imgs img {
   position: absolute;
@@ -371,6 +405,9 @@ h3 {
   height: 100%;
   width: 0;
   background: #fff;
+}
+.frame .bars b.run {
+  background: #ff8a1f;
 }
 .frame .bars b.run {
   animation-name: fill;
@@ -421,13 +458,14 @@ h3 {
 .frame .cap .go {
   margin-top: 6px;
   display: inline-block;
-  background: #fff;
-  color: #111;
+  background: #ff7a00;
+  color: #0a1f44;
   text-decoration: none;
-  padding: 8px 18px;
+  padding: 9px 22px;
   border-radius: 999px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
+  box-shadow: 0 6px 18px rgba(255, 122, 0, 0.35);
 }
 .frame .nav {
   position: absolute;
@@ -499,8 +537,9 @@ h3 {
 .card {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 20px;
+  box-shadow: var(--shadow);
 }
 .formgrid {
   display: grid;
@@ -627,8 +666,8 @@ input[type="file"] {
   font-weight: 500;
 }
 .seg button[aria-pressed="true"] {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 .items {
   display: flex;
@@ -641,8 +680,9 @@ input[type="file"] {
   align-items: flex-start;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 14px;
+  box-shadow: var(--shadow);
 }
 .item .th {
   width: 84px;

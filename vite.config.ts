@@ -11,7 +11,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "apple-touch-icon.png"],
+      includeAssets: ["favicon.png", "apple-touch-icon.png"],
       manifest: {
         name: "Adspace",
         short_name: "Adspace",
@@ -22,8 +22,8 @@ export default defineConfig({
         scope: base,
         display: "standalone",
         orientation: "portrait",
-        background_color: "#0F1316",
-        theme_color: "#0F766E",
+        background_color: "#FFFFFF",
+        theme_color: "#0B3B8C",
         icons: [
           { src: "pwa-192.png", sizes: "192x192", type: "image/png" },
           { src: "pwa-512.png", sizes: "512x512", type: "image/png" },

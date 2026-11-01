@@ -40,7 +40,9 @@ export function Layout() {
           <span className="badge">
             <img src={mark} alt="" />
           </span>
-          <span>Adspace</span>
+          <span className="wm">
+            <b>Ad</b>space
+          </span>
         </div>
         <div className="menu" ref={menuRef}>
           <button
