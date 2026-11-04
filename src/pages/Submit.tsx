@@ -212,7 +212,10 @@ export default function Submit() {
             <canvas ref={canvasRef} hidden={!hasImage} />
             {hasImage && (
               <div className="cap">
-                {title.trim() && <b>{title.trim()}</b>}
+                <div className="txt">
+                  {title.trim() && <b>{title.trim()}</b>}
+                  {advertiser.trim() && <small>{advertiser.trim()}</small>}
+                </div>
                 {(cleanLink(link) || cta.trim()) && <span>{cta.trim() || "اعرف أكثر"}</span>}
               </div>
             )}

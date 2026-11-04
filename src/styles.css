@@ -437,26 +437,46 @@ h3 {
   position: absolute;
   inset: auto 0 0;
   z-index: 3;
-  padding: 56px 16px 18px;
+  padding: 52px 14px 16px;
   background: linear-gradient(transparent, var(--scrim));
   display: flex;
+  flex-direction: row; /* النص على الجنب وزر اعرف أكثر جنبه في نفس السطر */
+  gap: 12px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.frame .cap .txt {
+  flex: 1;
+  min-width: 0;
+  display: flex;
   flex-direction: column;
-  gap: 6px;
-  align-items: flex-start;
+  gap: 2px;
 }
 .frame .cap .t {
   font-family: var(--display);
-  font-size: 22px;
+  font-size: 19px;
+  overflow-wrap: anywhere;
   font-weight: 700;
   line-height: 1.3;
   text-wrap: balance;
 }
+.frame .cap .t {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
 .frame .cap .a {
   font-size: 13px;
   opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .frame .cap .go {
-  margin-top: 6px;
+  flex: none;
+  white-space: nowrap;
   display: inline-block;
   background: #ff7a00;
   color: #0a1f44;
@@ -626,9 +646,24 @@ input[type="file"] {
   color: #fff;
   text-align: start;
   display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.pv .cap .txt {
+  flex: 1;
+  min-width: 0;
+  display: flex;
   flex-direction: column;
-  gap: 4px;
-  align-items: flex-start;
+}
+.pv .cap small {
+  font-size: 11px;
+  opacity: 0.85;
+}
+.pv .cap span {
+  flex: none;
+  white-space: nowrap;
 }
 .pv .cap b {
   font-family: var(--display);

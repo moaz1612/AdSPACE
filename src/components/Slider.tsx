@@ -119,8 +119,10 @@ export default function Slider({ slides, onView, onCta }: Props) {
         <div className="tag">{cur.sample ? "نموذج" : "إعلان"}</div>
 
         <div className="cap">
-          {cur.title && <div className="t">{cur.title}</div>}
-          {cur.advertiser && <div className="a">{cur.advertiser}</div>}
+          <div className="txt">
+            {cur.title && <div className="t">{cur.title}</div>}
+            {cur.advertiser && <div className="a">{cur.advertiser}</div>}
+          </div>
           {link && (
             <a
               className="go"
