@@ -15,23 +15,20 @@ export function loadImage(file: File): Promise<HTMLImageElement> {
   });
 }
 
-export const AD_W = 720;
-export const AD_H = 1280;
+const MAX_SIDE = 1280;
 
-/** يرسم الصورة على كانفس 9:16 بقص من المنتصف. pos بين 0 و1 يحرك موضع القص */
-export function drawCover(canvas: HTMLCanvasElement, img: HTMLImageElement, pos: number): void {
-  canvas.width = AD_W;
-  canvas.height = AD_H;
-  const scale = Math.max(AD_W / img.naturalWidth, AD_H / img.naturalHeight);
-  const sw = AD_W / scale;
-  const sh = AD_H / scale;
-  const sx = (img.naturalWidth - sw) * pos;
-  const sy = (img.naturalHeight - sh) * pos;
+/** يرسم الصورة كاملة بنسبتها الأصلية (بدون قص)، مع تصغيرها لو كانت أكبر من ١٢٨٠ بكسل */
+export function drawFit(canvas: HTMLCanvasElement, img: HTMLImageElement): void {
+  const scale = Math.min(1, MAX_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(1, Math.round(img.naturalWidth * scale));
+  const h = Math.max(1, Math.round(img.naturalHeight * scale));
+  canvas.width = w;
+  canvas.height = h;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, AD_W, AD_H);
-  ctx.drawImage(img, sx, sy, sw, sh, 0, 0, AD_W, AD_H);
+  ctx.fillStyle = "#fff"; // خلفية بيضاء للصور الشفافة لأن الحفظ بصيغة JPEG
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(img, 0, 0, w, h);
 }
 
 function toBlob(canvas: HTMLCanvasElement, quality: number): Promise<Blob> {

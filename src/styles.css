@@ -365,7 +365,9 @@ h3 {
   width: calc((100vh - 97px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * 9 / 16);
   width: calc((100dvh - 97px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * 9 / 16);
   max-width: 100%;
-  background: #0b0e11;
+  display: flex;
+  flex-direction: column;
+  background: #0a1f44;
   border-radius: 14px;
   overflow: hidden;
   color: #fff;
@@ -373,17 +375,41 @@ h3 {
   touch-action: pan-y;
   box-shadow: 0 0 0 1px var(--line), var(--shadow);
 }
-.frame .imgs img {
+/* منطقة الصورة: الصورة كاملة بدون قص فوق نسخة مموهة منها تملأ الباقي */
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #0b0e11;
+}
+.imgs {
+  position: absolute;
+  inset: 0;
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.slide.on {
+  opacity: 1;
+}
+.slide img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.4s;
+  display: block;
 }
-.frame .imgs img.on {
-  opacity: 1;
+.slide img.bg {
+  object-fit: cover;
+  filter: blur(22px) brightness(0.6);
+  transform: scale(1.15);
+}
+.slide img.fg {
+  object-fit: contain;
 }
 .frame .bars {
   position: absolute;
@@ -397,7 +423,7 @@ h3 {
   flex: 1;
   height: 3px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.35);
   overflow: hidden;
 }
 .frame .bars b {
@@ -408,8 +434,6 @@ h3 {
 }
 .frame .bars b.run {
   background: #ff8a1f;
-}
-.frame .bars b.run {
   animation-name: fill;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
@@ -430,62 +454,58 @@ h3 {
   font-size: 12px;
   padding: 1px 9px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
 }
-.frame .cap {
-  position: absolute;
-  inset: auto 0 0;
-  z-index: 3;
-  padding: 52px 14px 16px;
-  background: linear-gradient(transparent, var(--scrim));
+/* الشريط السفلي: سطر واحد، من اليمين: اعرف أكثر ثم المعلن ثم العنوان */
+.adbar {
+  flex: none;
   display: flex;
-  flex-direction: row; /* النص على الجنب وزر اعرف أكثر جنبه في نفس السطر */
-  gap: 12px;
-  align-items: flex-end;
-  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 8px 12px;
+  background: #0a1f44;
+  color: #fff;
+  text-align: start;
 }
-.frame .cap .txt {
-  flex: 1;
+.adbar .go {
+  flex: none;
+  white-space: nowrap;
+  background: #ff7a00;
+  color: #0a1f44;
+  text-decoration: none;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.adbar .who {
+  flex: 0 1 auto;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.frame .cap .t {
-  font-family: var(--display);
-  font-size: 19px;
-  overflow-wrap: anywhere;
-  font-weight: 700;
-  line-height: 1.3;
-  text-wrap: balance;
-}
-.frame .cap .t {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-}
-.frame .cap .a {
+  max-width: 30%;
   font-size: 13px;
   opacity: 0.85;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-inline-end: 10px;
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.28);
 }
-.frame .cap .go {
-  flex: none;
+.adbar .who:last-child {
+  padding-inline-end: 0;
+  border-inline-end: 0;
+}
+.adbar .ttl {
+  flex: 1 1 0;
+  min-width: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 16px;
   white-space: nowrap;
-  display: inline-block;
-  background: #ff7a00;
-  color: #0a1f44;
-  text-decoration: none;
-  padding: 9px 22px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 15px;
-  box-shadow: 0 6px 18px rgba(255, 122, 0, 0.35);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .frame .nav {
   position: absolute;
@@ -622,61 +642,34 @@ input[type="file"] {
   border-radius: 12px;
   overflow: hidden;
   border: 1px dashed var(--muted);
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
   text-align: center;
   color: var(--muted);
-  padding: 14px;
   font-size: 14px;
 }
 .pv.has {
   border-style: solid;
 }
-.pv canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+.pv .hint {
+  margin: auto;
+  padding: 14px;
 }
-.pv .cap {
-  position: absolute;
-  inset: auto 0 0;
-  padding: 34px 10px 10px;
-  background: linear-gradient(transparent, var(--scrim));
-  color: #fff;
-  text-align: start;
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: flex-end;
-  justify-content: space-between;
+.pv .adbar {
+  min-height: 42px;
+  padding: 6px 8px;
+  gap: 6px;
 }
-.pv .cap .txt {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-.pv .cap small {
+.pv .adbar .go {
+  padding: 3px 10px;
   font-size: 11px;
-  opacity: 0.85;
 }
-.pv .cap span {
-  flex: none;
-  white-space: nowrap;
+.pv .adbar .who {
+  font-size: 10px;
+  padding-inline-end: 6px;
 }
-.pv .cap b {
-  font-family: var(--display);
-  font-size: 15px;
-  line-height: 1.3;
-}
-.pv .cap span {
-  background: #fff;
-  color: #111;
-  padding: 2px 11px;
-  border-radius: 999px;
+.pv .adbar .ttl {
   font-size: 12px;
-  font-weight: 600;
 }
 .err {
   color: var(--bad);

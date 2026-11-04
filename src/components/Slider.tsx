@@ -82,47 +82,50 @@ export default function Slider({ slides, onView, onCta }: Props) {
           startX.current = null;
         }}
       >
-        <div className="imgs">
-          {slides.map((s, i) => (
-            <img
-              key={s.id}
-              src={s.imageUrl}
-              alt={s.title}
-              draggable={false}
-              className={i === safeIdx ? "on" : ""}
-            />
-          ))}
-        </div>
-
-        <div className="bars">
-          {slides.map((s, i) => (
-            <span key={s.id}>
-              {i < safeIdx ? (
-                <b style={{ width: "100%" }} />
-              ) : i === safeIdx ? (
-                <b
-                  key={cycle}
-                  className="run"
-                  style={{
-                    animationDuration: `${s.seconds}s`,
-                    animationPlayState: paused ? "paused" : "running"
-                  }}
-                  onAnimationEnd={() => go(safeIdx + 1)}
-                />
-              ) : (
-                <b />
-              )}
-            </span>
-          ))}
-        </div>
-
-        <div className="tag">{cur.sample ? "نموذج" : "إعلان"}</div>
-
-        <div className="cap">
-          <div className="txt">
-            {cur.title && <div className="t">{cur.title}</div>}
-            {cur.advertiser && <div className="a">{cur.advertiser}</div>}
+        <div className="stage">
+          <div className="imgs">
+            {slides.map((s, i) => (
+              <div key={s.id} className={i === safeIdx ? "slide on" : "slide"}>
+                <img className="bg" src={s.imageUrl} alt="" aria-hidden="true" draggable={false} />
+                <img className="fg" src={s.imageUrl} alt={s.title} draggable={false} />
+              </div>
+            ))}
           </div>
+
+          <div className="bars">
+            {slides.map((s, i) => (
+              <span key={s.id}>
+                {i < safeIdx ? (
+                  <b style={{ width: "100%" }} />
+                ) : i === safeIdx ? (
+                  <b
+                    key={cycle}
+                    className="run"
+                    style={{
+                      animationDuration: `${s.seconds}s`,
+                      animationPlayState: paused ? "paused" : "running"
+                    }}
+                    onAnimationEnd={() => go(safeIdx + 1)}
+                  />
+                ) : (
+                  <b />
+                )}
+              </span>
+            ))}
+          </div>
+
+          <div className="tag">{cur.sample ? "نموذج" : "إعلان"}</div>
+
+          <button type="button" className="nav prev" aria-label="السابق" onClick={() => go(safeIdx - 1)}>
+            ›
+          </button>
+          <button type="button" className="nav next" aria-label="التالي" onClick={() => go(safeIdx + 1)}>
+            ‹
+          </button>
+        </div>
+
+        {/* شريط سفلي بسطر واحد: اعرف أكثر (يمين) ثم المعلن ثم العنوان */}
+        <div className="adbar">
           {link && (
             <a
               className="go"
@@ -134,14 +137,9 @@ export default function Slider({ slides, onView, onCta }: Props) {
               {cur.cta || "اعرف أكثر"}
             </a>
           )}
+          {cur.advertiser && <span className="who">{cur.advertiser}</span>}
+          {cur.title && <span className="ttl">{cur.title}</span>}
         </div>
-
-        <button type="button" className="nav prev" aria-label="السابق" onClick={() => go(safeIdx - 1)}>
-          ›
-        </button>
-        <button type="button" className="nav next" aria-label="التالي" onClick={() => go(safeIdx + 1)}>
-          ‹
-        </button>
       </div>
 
       <div className="queue">

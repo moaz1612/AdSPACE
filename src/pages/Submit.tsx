@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { useToast } from "../components/Toast";
-import { canvasToBlob, drawCover, loadImage } from "../lib/image";
+import { canvasToBlob, drawFit, loadImage } from "../lib/image";
 import { IMAGE_BUCKET, supabase } from "../lib/supabase";
 import { DAY, cleanLink, newFileName } from "../lib/util";
 
@@ -11,10 +11,9 @@ export default function Submit() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const imgRef = useRef<HTMLImageElement | null>(null);
-  const [hasImage, setHasImage] = useState(false);
-  const [pos, setPos] = useState(50);
+  const canvasRef = useRef<HTMLCanvasElement>(null); // كانفس مخفي نصدّر منه الصورة المرفوعة
+  const [preview, setPreview] = useState<string | null>(null);
+  const hasImage = preview !== null;
 
   const [advertiser, setAdvertiser] = useState("");
   const [title, setTitle] = useState("");
@@ -24,12 +23,6 @@ export default function Submit() {
   const [contact, setContact] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    if (hasImage && imgRef.current && canvasRef.current) {
-      drawCover(canvasRef.current, imgRef.current, pos / 100);
-    }
-  }, [hasImage, pos]);
 
   async function onFile(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -44,9 +37,11 @@ export default function Submit() {
       return;
     }
     try {
-      imgRef.current = await loadImage(file);
-      setPos(50);
-      setHasImage(true);
+      const img = await loadImage(file);
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      drawFit(canvas, img);
+      setPreview(canvas.toDataURL("image/jpeg", 0.8));
     } catch {
       setError("تعذر قراءة الصورة. جرب صورة أخرى.");
     }
@@ -183,15 +178,9 @@ export default function Submit() {
               </label>
             </div>
             <label className="l" htmlFor="file">
-              صورة الإعلان <small>يفضل أن تكون طولية. تقص تلقائيا إلى ٩:١٦.</small>
+              صورة الإعلان <small>تظهر كاملة بدون قص. الأنسب صورة طولية ٩:١٦.</small>
               <input id="file" type="file" accept="image/*" onChange={onFile} />
             </label>
-            {hasImage && (
-              <label className="l" htmlFor="pos">
-                موضع القص
-                <input id="pos" type="range" min={0} max={100} value={pos} onChange={(e) => setPos(Number(e.target.value))} />
-              </label>
-            )}
             <div className="err" role="alert">
               {error}
             </div>
@@ -208,18 +197,26 @@ export default function Submit() {
           </form>
 
           <div className={hasImage ? "pv has" : "pv"}>
-            {!hasImage && <span>معاينة الإعلان ٩:١٦ تظهر هنا بعد اختيار الصورة</span>}
-            <canvas ref={canvasRef} hidden={!hasImage} />
-            {hasImage && (
-              <div className="cap">
-                <div className="txt">
-                  {title.trim() && <b>{title.trim()}</b>}
-                  {advertiser.trim() && <small>{advertiser.trim()}</small>}
+            {!hasImage && <span className="hint">معاينة الإعلان ٩:١٦ تظهر هنا بعد اختيار الصورة</span>}
+            {preview && (
+              <>
+                <div className="stage">
+                  <div className="imgs">
+                    <div className="slide on">
+                      <img className="bg" src={preview} alt="" aria-hidden="true" />
+                      <img className="fg" src={preview} alt="" />
+                    </div>
+                  </div>
                 </div>
-                {(cleanLink(link) || cta.trim()) && <span>{cta.trim() || "اعرف أكثر"}</span>}
-              </div>
+                <div className="adbar">
+                  {cleanLink(link) && <span className="go">{cta.trim() || "اعرف أكثر"}</span>}
+                  {advertiser.trim() && <span className="who">{advertiser.trim()}</span>}
+                  {title.trim() && <span className="ttl">{title.trim()}</span>}
+                </div>
+              </>
             )}
           </div>
+          <canvas ref={canvasRef} hidden />
         </div>
       </div>
     </>
